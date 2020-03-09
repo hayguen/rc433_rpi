@@ -58,7 +58,7 @@ that is enough for recording, cause you can transmit very close to the receiver 
 
 1. connect XY-MK-5V's VCC to Raspberry Pi's Pin 1 (=3V3 Power)
 2. connect one of XY-MK-5V's DATA to Raspberry Pi's Pin 7 (=GPIO4)
-3. connect XY-MK-5V's GND to Raspberry Pi's Pin 7 (=Ground)
+3. connect XY-MK-5V's GND to Raspberry Pi's Pin 9 (=Ground)
 
 
 optionally connect an RTL-SDR receiver with a suitable antenna to one of the Raspberry Pi's USB ports.
