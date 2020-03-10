@@ -1,4 +1,3 @@
-
 # rc433_rpi
 
 transmit remote control signals at [ISM band](https://en.wikipedia.org/wiki/ISM_band) frequency 433.92 MHz with [Raspberry Pi](https://www.raspberrypi.org/) and a transmitter module
@@ -6,13 +5,9 @@ transmit remote control signals at [ISM band](https://en.wikipedia.org/wiki/ISM_
 this software is intended for [OOK (On-Off-Keying)](https://en.wikipedia.org/wiki/On%E2%80%93off_keying) signals, which has to be *recorded* once with an RTL-SDR or a receiver module. For RTL-SDR see [http://superkuh.com/rtlsdr.html](http://superkuh.com/rtlsdr.html) or [https://www.rtl-sdr.com/](https://www.rtl-sdr.com/).
 after *some* editing, you should be able to replay the signal utilizing a transmitter module connected to the Raspberry Pi.
 
-
-
 there is other software for this purpose, e.g. [https://github.com/sui77/rc-switch](https://github.com/sui77/rc-switch). these software packages depend on the [http://wiringpi.com/](http://wiringpi.com/) software library. Unfortunately, the latest Wiring Pi sources with support for Raspberry Pi 4,now (2020-03-08) isn't available for several months .. see blog entry [http://wiringpi.com/wiringpi-deprecated/](http://wiringpi.com/wiringpi-deprecated/).
 
 this software utilizes the [http://abyz.me.uk/rpi/pigpio/](http://abyz.me.uk/rpi/pigpio/) library, which is also referenced from the Raspberry Pi organization; see [https://www.raspberrypi.org/documentation/usage/gpio/README.md](https://www.raspberrypi.org/documentation/usage/gpio/README.md)
-
-
 
 
 # software setup
@@ -32,15 +27,21 @@ this software utilizes the [http://abyz.me.uk/rpi/pigpio/](http://abyz.me.uk/rpi
 
     or install several recommended packages. in this case, you might want to edit the install file - before executing it. the script/user requires `sudo` permissions:
 
-    `./install_recommended_packages.sh`
+    ```
+    ./install_recommended_packages.sh
+    ```
     
 3. download several github sources
 
-    `./get_all_git_sources.sh`
+    ```
+    ./get_all_git_sources.sh
+    ```
 
 4. build/install the downloaded github sources; you might want to edit - before execution. your user needs `sudo` rights for this
 
-    `./build_all_git_sources.sh`
+    ```
+    ./build_all_git_sources.sh
+    ```
 
 
 # hardware setup
@@ -74,21 +75,29 @@ you need to connect RTL-SDR or a receiver module once, to record the remote cont
 
 1. start the pigpio daemon - if not already running (this requires root privileges):
 
-    `sudo pigpiod`
+    ```
+    sudo pigpiod
+    ```
 
 2. change directory to the clone github directory, e.g.
 
-    `cd $HOME/rc433_rpi`
+    ```
+    cd $HOME/rc433_rpi
+    ```
 
     
 
 3. record the raw signal - be prepared to press the remote control multiple times before pressing enter:
 
-    `./rx_wav_from_gpio.py`
+    ```
+    ./rx_wav_from_gpio.py
+    ```
 
-4. open an audio editor, e.g. audacity. open the recorded '/dev/shm/rec.wav' file
+4. open an audio editor, e.g. audacity. open the recorded `/dev/shm/rec.wav` file
 
-    `audacity`
+    ```
+    audacity
+    ```
 
     1. cut the signal to one single pulse train: mark and delete unnecessary regions. zoom if required
 
@@ -100,11 +109,15 @@ you need to connect RTL-SDR or a receiver module once, to record the remote cont
 
 5. convert the exported WAVE into a smaller .csv file
 
-    `./csv_from_wave.py rec-lunvon-IV-ALL-OFF.wav`
+    ```
+    ./csv_from_wave.py rec-lunvon-IV-ALL-OFF.wav
+    ```
 
 6. transmit the generated .csv - check if remote controlled device is switched:
 
-    `./tx_csv.py /dev/shm/rec.csv`
+    ```
+    ./tx_csv.py /dev/shm/rec.csv
+    ```
 
     repeat recording and test if device isn't switched
 
@@ -112,22 +125,30 @@ you need to connect RTL-SDR or a receiver module once, to record the remote cont
 
 7. copy/move the working generated .csv file to somewhere persistent
 
-    `mv /dev/shm/rec.csv $HOME/lunvon-IV-ALL-OFF.csv`
+    ```
+    mv /dev/shm/rec.csv $HOME/lunvon-IV-ALL-OFF.csv
+    ```
 
 
 # record remote control signal with an RTL-SDR
 
 1. start the pigpio daemon - if not already running (this requires root privileges):
 
-    `sudo pigpiod`
+    ```
+    sudo pigpiod
+    ```
 
 2. change directory to the clone github directory, e.g.
 
-    `cd $HOME/rc433_rpi`
+    ```
+    cd $HOME/rc433_rpi
+    ```
 
 3. determine exact frequency of remote control with an SDR software, e.g. gqrx
 
-    `gqrx`
+    ```
+    gqrx
+    ```
 
     1. select correct device (menu File, I/O Devices)
 
@@ -144,31 +165,44 @@ you need to connect RTL-SDR or a receiver module once, to record the remote cont
 4. record the raw signal - be prepared to press the remote control multiple times before pressing enter.
      use the gain value (required) and the exact frequency (optional) as parameters:
 
-     `./rx_wav_from_rtlsdr.sh 32.8 433.97`
+     ```
+     ./rx_wav_from_rtlsdr.sh 32.8 433.97
+     ```
 
 5. open an audio editor, e.g. `audacity`. open the recorded '/dev/shm/rec-magnitude.wav' file
 
-     `audacity`
+     ```
+     audacity
+     ```
 
      1. cut the signal to one single pulse train: mark and delete unnecessary regions. zoom if required
-     2. export the edited region to a WAVE file, e.g. in your home as rec-lunvon-IV-A-ON.wav
+     2. export the edited region to a WAVE file, e.g. in your home as `rec-lunvon-IV-A-ON.wav`
      3. close the file in audacity
 
      repeat recording with different gain level or transmit more close / distant if no obvious threshold can be determined
 
 6. calculate threshold value as 16 Bit with a calculator or  in `python3`:
 
-     `python3`
-
-     enter the threshold `0.4 * 32768`, gives ~ 13100. then `exit()` python with Ctrl-D
+     ```
+     python3
+     Python 3.8.0 (tags/v3.8.0:fa919fd, Oct 14 2019, 19:37:50) [MSC v.1916 64 bit (AMD64)] on win32
+     Type "help", "copyright", "credits" or "license" for more information.
+     >>> 0.4 * 32768
+     13107.2
+     >>> exit()
+     ```
 
 7. convert the exported WAVE into a smaller .csv file
 
-     `./csv_from_wave.py rec-lunvon-IV-A-ON.wav 13100`
+     ```
+     ./csv_from_wave.py rec-lunvon-IV-A-ON.wav 13100
+     ```
 
 8. transmit the generated .csv - check if remote controlled device is switched:
 
-     `./tx_csv.py /dev/shm/rec.csv`
+     ```
+     ./tx_csv.py /dev/shm/rec.csv
+     ```
 
      repeat recording - if device isn't switched
 
@@ -176,20 +210,27 @@ you need to connect RTL-SDR or a receiver module once, to record the remote cont
 
 9. copy/move the working .csv file to somewhere persistent
 
-     `mv /dev/shm/rec.csv $HOME/lunvon-IV-A-ON.csv`
+     ```
+     mv /dev/shm/rec.csv $HOME/lunvon-IV-A-ON.csv
+     ```
 
 
 # replay remote control signal
 
 1. start the `pigpio` daemon - if not already running (this requires root privileges):
 
-    `sudo pigpiod`
+    ```
+    sudo pigpiod
+    ```
 
 2. change directory to the cloned github directory, e.g.
 
-    `cd $HOME/rc433_rpi`
+    ```
+    cd $HOME/rc433_rpi
+    ```
 
 3. transmit the saved .csv
 
-    `./tx_csv.py $HOME/lunvon-IV-A-ON.csv`
-
+    ```
+    ./tx_csv.py $HOME/lunvon-IV-A-ON.csv
+    ```
