@@ -20,7 +20,7 @@ this software utilizes the [http://abyz.me.uk/rpi/pigpio/](http://abyz.me.uk/rpi
 
 2. install required packages:
     ```
-    sudo apt-get install python3 python3-scipy pthon3-numpy
+    sudo apt-get install python3 python3-scipy python3-numpy
     sudo apt-get install pigpio pigpio-tools pigpiod python3-pigpio
     sudo apt-get install audacity gqrx-sdr
     ```
