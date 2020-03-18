@@ -13,15 +13,17 @@ this software utilizes the [http://abyz.me.uk/rpi/pigpio/](http://abyz.me.uk/rpi
 # software setup
 
 1. download the repository:
+
     ```
     git clone https://github.com/hayguen/rc433_rpi.git
     cd rc433_rpi
     ```
 
 2. install required packages:
+
     ```
     sudo apt-get install python3 python3-scipy python3-numpy
-    sudo apt-get install pigpio pigpio-tools pigpiod python3-pigpio
+    sudo apt-get install pigpio pigpio-tools pigpiod python3-pigpio python3-gpiozero
     sudo apt-get install audacity gqrx-sdr
     ```
 
@@ -30,14 +32,43 @@ this software utilizes the [http://abyz.me.uk/rpi/pigpio/](http://abyz.me.uk/rpi
     ```
     ./install_recommended_packages.sh
     ```
-    
-3. download several github sources
+
+3. setup pigpiod service:
+
+    append options to the daemon, e.g. `-t 0` at line starting with `ExecStart=`, to switch from PCM clock (default) to PWM
+
+    ```
+    sudo nano /lib/systemd/system/pigpiod.service
+    ```
+
+    see [https://github.com/joan2937/pigpio/issues/331](https://github.com/joan2937/pigpio/issues/331) to read about timing problems
+    of PCM clock when using audio through 3.5mm jack and the PCM clock in pigpio(d).
+    using the audio device happens automatically when booting into GUI (sound server) in headless mode (no display connected at HDMI).
+    timing problems at transmission (replay) prevent detection and switching of the device to be controlled.
+
+    important is the option, which audio jack to use
+
+    ```
+    sudo raspi-config
+      '7 Advanced Options' / 'A4 Audio':
+      '0 Auto' / '1 Force 3.5mm' / '2 Force HDMI'
+    ```
+
+    activate and start the service:
+
+    ```
+    sudo systemctl enable pigpiod
+    sudo systemctl start  pigpiod
+    sudo systemctl status pigpiod
+    ```
+
+4. download several github sources
 
     ```
     ./get_all_git_sources.sh
     ```
 
-4. build/install the downloaded github sources; you might want to edit - before execution. your user needs `sudo` rights for this
+5. build/install the downloaded github sources; you might want to edit - before execution. your user needs `sudo` rights for this
 
     ```
     ./build_all_git_sources.sh
@@ -73,13 +104,13 @@ you need to connect RTL-SDR or a receiver module once, to record the remote cont
 
 # record remote control signal with a receiver module
 
-1. start the pigpio daemon - if not already running (this requires root privileges):
+1. start the pigpio daemon - if not already running, e.g. from the service (this requires root privileges):
 
     ```
     sudo pigpiod
     ```
 
-2. change directory to the clone github directory, e.g.
+2. change directory to the cloned github directory, e.g.
 
     ```
     cd $HOME/rc433_rpi
@@ -132,13 +163,13 @@ you need to connect RTL-SDR or a receiver module once, to record the remote cont
 
 # record remote control signal with an RTL-SDR
 
-1. start the pigpio daemon - if not already running (this requires root privileges):
+1. start the pigpio daemon - if not already running, e.g. from the service (this requires root privileges):
 
     ```
     sudo pigpiod
     ```
 
-2. change directory to the clone github directory, e.g.
+2. change directory to the cloned github directory, e.g.
 
     ```
     cd $HOME/rc433_rpi
@@ -206,7 +237,7 @@ you need to connect RTL-SDR or a receiver module once, to record the remote cont
 
      repeat recording - if device isn't switched
 
-     
+
 
 9. copy/move the working .csv file to somewhere persistent
 
@@ -217,7 +248,7 @@ you need to connect RTL-SDR or a receiver module once, to record the remote cont
 
 # replay remote control signal
 
-1. start the `pigpio` daemon - if not already running (this requires root privileges):
+1. start the `pigpio` daemon - if not already running, e.g. from the service (this requires root privileges):
 
     ```
     sudo pigpiod

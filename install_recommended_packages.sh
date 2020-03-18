@@ -8,5 +8,5 @@ sudo apt-get -y install qt5-default qtbase5-dev qtchooser libqt5multimedia5-plug
 sudo apt-get -y install audacity gqrx-sdr cubicsdr
 sudo apt-get -y install python3 python3-scipy python3-numpy python3-matplotlib ipython3
 
-# sudo apt-get install python-setuptools python-pigpio
-sudo apt-get -y install pigpio pigpio-tools pigpiod python3-setuptools python3-pigpio gtk+-3.0
+# sudo apt-get  install python-pigpio python-gpiozero python-setuptools
+sudo apt-get -y install pigpio pigpio-tools pigpiod python3-pigpio python3-gpiozero python3-setuptools gtk+-3.0
